@@ -1,6 +1,6 @@
 #!/bin/bash
 # Raspberry Pi stress CPU temperature measurement script.
-#
+# From Jeff Geerling: https://gist.github.com/geerlingguy/91d4736afe9321cbfc1062165188dda4
 # Download this script (e.g. with wget) and give it execute permissions (chmod +x).
 # Then run it with ./pi-cpu-stress.sh
 
@@ -19,19 +19,32 @@ fi
 printf "Logging temperature and throttling data to: $test_results_file\n"
 
 # Start logging temperature data in the background.
+# 当前的秒数；
+current_second=0
 while /bin/true; do
   # Print the date (e.g. "Wed 13 Nov 18:24:45 GMT 2019") and a tab.
-  date | tr '\n' '\t' >> $test_results_file;
+  # 打印当前日期
+  # date | tr '\n' '\t' >> $test_results_file;
+  # 打印当前的秒数
+  echo $current_second >> $test_results_file;
 
   # Print the temperature (e.g. "39.0") and a tab.
-  vcgencmd measure_temp | tr -d "temp=" | tr -d "'C" | tr '\n' '\t' >> $test_results_file;
+  # vcgencmd measure_temp | tr -d "temp=" | tr -d "'C" | tr '\n' '\t' >> $test_results_file;
+  # 打印CPU的温度
+  vcgencmd measure_temp | tr -d "temp=" | tr '\n' '\t' >> $test_results_file;
 
   # Print the throttle status (e.g. "0x0") and a tab.
-  vcgencmd get_throttled | tr -d "throttled=" | tr '\n' '\t' >> $test_results_file;
+  # 检查是否出现欠压现象
+  # 这个数字的第 0 位为 1 的话，表明当前发生了输入电压不足的情况；
+  # 这个数字的第 16 位为 1 的话，表明启动之后曾经发生过输入电压不足的情况；
+  # vcgencmd get_throttled | tr -d "throttled=" | tr '\n' '\t' >> $test_results_file;
 
   # Print the current CPU frequency.
-  vcgencmd measure_clock arm | sed 's/^.*=//' >> $test_results_file;
-  sleep 5;
+  # 打印当前CPU时钟
+  # vcgencmd measure_clock arm | sed 's/^.*=//' >> $test_results_file;
+  
+  current_second += 60;
+  sleep 60;  
 done &
 
 # Store the logging pid.
