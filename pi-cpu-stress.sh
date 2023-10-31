@@ -25,17 +25,16 @@ while /bin/true; do
   # Print the date (e.g. "Wed 13 Nov 18:24:45 GMT 2019") and a tab.
   # 打印当前日期
   # date | tr '\n' '\t' >> $test_results_file;  
-  # 打印当前的秒数, -n 表示不换行
-  printf $current_second >> $test_results_file;
-  printf '\t' >> $test_results_file;
-  # 打印当前的秒数, -n 表示不换行
-  # echo -n $current_second >> $test_results_file;
-  # echo '\t' >> $test_results_file;
-
+  
+  # 打印当前的秒数,  by Geekworm
+  printf '%d\t' $current_second >> $test_results_file;
+  
   # Print the temperature (e.g. "39.0") and a tab.
   # vcgencmd measure_temp | tr -d "temp=" | tr -d "'C" | tr '\n' '\t' >> $test_results_file;
-  # 打印CPU的温度
-  vcgencmd measure_temp | tr -d "temp=" | tr '\n' '\t' >> $test_results_file;
+  
+  # 打印CPU的温度 by Geekworm
+  # vcgencmd measure_temp | tr -d "temp=" | tr '\n' '\t' >> $test_results_file;
+  vcgencmd measure_temp | tr -d "temp="  >> $test_results_file;
 
   # Print the throttle status (e.g. "0x0") and a tab.
   # 检查是否出现欠压现象
@@ -46,9 +45,10 @@ while /bin/true; do
   # Print the current CPU frequency.
   # 打印当前CPU时钟
   # vcgencmd measure_clock arm | sed 's/^.*=//' >> $test_results_file;
-  
-  let current_second=current_second+60;
-  sleep 60;  
+
+  # Aded by Geekworm
+  let current_second=current_second+30;
+  sleep 30;  
 done &
 
 # Store the logging pid.
