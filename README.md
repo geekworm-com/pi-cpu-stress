@@ -9,4 +9,4 @@ Raspberry Pi stress CPU temperature measurement script, from Jeff Geerling: http
 
 > ./pi-cpu-stress.sh
 
-And this script will output a cpu_temp_1.log file.
+And this script will output a **cpu_temp_1.log** file in your **home** directory.
